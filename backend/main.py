@@ -6,8 +6,9 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 import logging
 
-from . import models, database
-from .database import get_db
+import models
+import database
+from database import get_db
 
 # Konfigurasi basic logging
 logging.basicConfig(level=logging.INFO)

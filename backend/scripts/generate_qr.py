@@ -1,15 +1,12 @@
 import os
 import secrets
 import qrcode
-import sys
 import random
 from sqlalchemy.orm import Session
 
-# Menambahkan path root backend ke sys.path agar bisa import module backend
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from database import SessionLocal, engine
-import models
+# Import dari package backend (jalankan dari root folder Vity/)
+from backend.database import SessionLocal, engine
+from backend import models
 
 def init_db():
     """

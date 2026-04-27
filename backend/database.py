@@ -1,10 +1,13 @@
 import os
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 
-# Memuat variabel lingkungan dari file .env
-load_dotenv()
+# Memuat variabel lingkungan dari file .env yang berada di folder backend/
+# Menggunakan path absolut agar selalu ditemukan terlepas dari CWD saat startup
+_env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=_env_path)
 
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")

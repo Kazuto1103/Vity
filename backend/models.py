@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from .database import Base
+from database import Base
 
 class Keychain(Base):
     """
@@ -34,3 +34,4 @@ class Bottle(Base):
 
     # Relasi kembali ke Keychain
     reward = relationship("Keychain", back_populates="bottles")
+

@@ -1,0 +1,519 @@
+/* ==========================================================================
+   Starbucks-Inspired Design System
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Kalam:wght@400;700&family=Lora:wght@400;600;700&display=swap');
+
+:root {
+  /* ----------------------------------------------------------------------
+     1. Color Palette & Roles
+     ---------------------------------------------------------------------- */
+
+  /* Primary */
+  --color-starbucks-green: #006241;
+  --color-green-accent: #00754A;
+  --color-house-green: #1E3932;
+  --color-green-uplift: #2b5148;
+  --color-green-light: #d4e9e2;
+
+  /* Secondary & Accent */
+  --color-gold: #cba258;
+  --color-gold-light: #dfc49d;
+  --color-gold-lightest: #faf6ee;
+
+  /* Surface & Background */
+  --color-surface-white: #ffffff;
+  --color-surface-neutral-cool: #f9f9f9;
+  --color-surface-neutral-warm: #f2f0eb;
+  --color-surface-ceramic: #edebe9;
+  --color-surface-black: #000000;
+
+  /* Neutrals & Text */
+  --color-text-black: rgba(0, 0, 0, 0.87);
+  --color-text-black-soft: rgba(0, 0, 0, 0.58);
+  --color-text-white: rgba(255, 255, 255, 1);
+  --color-text-white-soft: rgba(255, 255, 255, 0.70);
+  --color-text-rewards-green: #33433d;
+
+  /* Semantic & Accent */
+  --color-red: #c82014;
+  --color-yellow: #fbbc05;
+  --color-green-light-valid: hsl(160 32% 87% / 33%);
+  --color-red-tint: hsl(4 82% 43% / 5%);
+
+  /* ----------------------------------------------------------------------
+     2. Typography
+     ---------------------------------------------------------------------- */
+
+  /* Font Families (using Inter and Lora as open-source substitutes) */
+  --font-primary: SoDoSans, "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-fallback: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-rewards-serif: "Lander Tall", "Iowan Old Style", "Lora", Georgia, serif;
+  --font-careers-script: "Kalam", "Comic Sans MS", cursive;
+
+  /* Letter Spacing */
+  --letter-spacing-normal: -0.01em;
+  --letter-spacing-loose: 0.1em;
+  --letter-spacing-looser: 0.15em;
+
+  /* Line Height */
+  --line-height-normal: 1.5;
+  --line-height-compact: 1.2;
+
+  /* ----------------------------------------------------------------------
+     3. Spacing System
+     ---------------------------------------------------------------------- */
+  --space-1: 0.4rem;  /* 4px */
+  --space-2: 0.8rem;  /* 8px */
+  --space-3: 1.6rem;  /* 16px */
+  --space-4: 2.4rem;  /* 24px */
+  --space-5: 3.2rem;  /* 32px */
+  --space-6: 4.0rem;  /* 40px */
+  --space-7: 4.8rem;  /* 48px */
+  --space-8: 5.6rem;  /* 56px */
+  --space-9: 6.4rem;  /* 64px */
+
+  /* Gutters */
+  --outer-gutter: 1.6rem;
+  --outer-gutter-medium: 2.4rem;
+  --outer-gutter-large: 4.0rem;
+
+  /* ----------------------------------------------------------------------
+     4. Border Radius & Depth
+     ---------------------------------------------------------------------- */
+
+  /* Radius */
+  --border-radius-card: 12px;
+  --border-radius-button: 50px;
+  --border-radius-circle: 50%;
+
+  /* Box Shadows */
+  --shadow-card: 0 0 0.5px rgba(0,0,0,0.14), 0 1px 1px rgba(0,0,0,0.24);
+  --shadow-global-nav: 0 1px 3px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.06), 0 0 2px rgba(0,0,0,0.07);
+  --shadow-frap-base: 0 0 6px rgba(0,0,0,0.24);
+  --shadow-frap-ambient: 0 8px 12px rgba(0,0,0,0.14);
+  
+  /* Animations */
+  --button-active-scale: scale(0.95);
+  --transition-default: all 0.2s ease;
+  --expander-duration: 300ms;
+  --transition-bezier: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-spring: cubic-bezier(0.32, 2.32, 0.61, 0.27);
+  --image-fade-transition: opacity 0.3s ease-in;
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+/* 1rem = 10px for easier calculation */
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-surface-neutral-warm);
+  color: var(--color-text-black);
+  font-family: var(--font-primary);
+  font-size: 1.6rem; /* 16px */
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   Typography Classes
+   ========================================================================== */
+
+.text-display {
+  font-size: 5.0rem;
+  font-weight: 600;
+  line-height: var(--line-height-compact);
+  letter-spacing: -0.16px;
+}
+
+.text-jumbo {
+  font-size: 3.6rem;
+  font-weight: 600;
+  line-height: var(--line-height-compact);
+  letter-spacing: -0.16px;
+}
+
+.text-hero-large {
+  font-size: 2.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.16px;
+}
+
+h1, .h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 3.6rem;
+  letter-spacing: -0.16px;
+  color: var(--color-starbucks-green);
+  margin: 0 0 var(--space-3) 0;
+}
+
+h2, .h2 {
+  font-size: 2.4rem;
+  font-weight: 400;
+  line-height: 3.6rem;
+  letter-spacing: -0.16px;
+  color: var(--color-text-black);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.text-body-large {
+  font-size: 1.9rem;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: -0.16px;
+}
+
+.text-body {
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.text-small {
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.text-micro {
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+/* Contextual Typefaces */
+.font-rewards-serif {
+  font-family: var(--font-rewards-serif);
+}
+
+.font-careers-script {
+  font-family: var(--font-careers-script);
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-button);
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-normal);
+  line-height: var(--line-height-compact);
+  padding: 0.7rem 1.6rem;
+  cursor: pointer;
+  transition: var(--transition-default);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.btn:active {
+  transform: var(--button-active-scale);
+}
+
+/* 1. Primary Filled */
+.btn-primary {
+  background-color: var(--color-green-accent);
+  color: var(--color-surface-white);
+  border-color: var(--color-green-accent);
+}
+
+/* 2. Primary Outlined */
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-green-accent);
+  border-color: var(--color-green-accent);
+}
+
+/* 3. Black Filled */
+.btn-black {
+  background-color: var(--color-surface-black);
+  color: var(--color-surface-white);
+  border-color: var(--color-surface-black);
+  font-size: 1.4rem;
+}
+
+/* 4. Dark Outlined */
+.btn-outline-dark {
+  background-color: transparent;
+  color: var(--color-text-black);
+  border-color: var(--color-text-black);
+  font-size: 1.4rem;
+}
+
+/* 5. Green-on-Green Inverted */
+.btn-inverted {
+  background-color: var(--color-surface-white);
+  color: var(--color-green-accent);
+  border-color: var(--color-surface-white);
+}
+
+/* 6. Outlined on Dark */
+.btn-outline-light {
+  background-color: transparent;
+  color: var(--color-surface-white);
+  border-color: var(--color-surface-white);
+}
+
+/* Customize Button (PDP) */
+.btn-customize {
+  background-color: var(--color-surface-white);
+  color: var(--color-green-accent);
+  border: 1.5px solid var(--color-green-accent);
+  padding: 1.4rem 4.0rem;
+}
+
+/* ==========================================================================
+   Floating Frap CTA
+   ========================================================================== */
+
+.btn-frap {
+  position: fixed;
+  bottom: calc(var(--space-4) - 0.8rem); /* Accounting for touch offset */
+  right: calc(var(--space-4) - 0.8rem);
+  width: 5.6rem;
+  height: 5.6rem;
+  border-radius: var(--border-radius-circle);
+  background-color: var(--color-green-accent);
+  color: var(--color-surface-white);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-frap-base), var(--shadow-frap-ambient);
+  cursor: pointer;
+  transition: var(--transition-default);
+  z-index: 100;
+  padding: 0.8rem; /* Creates the extended touch target visually */
+}
+
+.btn-frap svg {
+  width: 2.4rem;
+  height: 2.4rem;
+  fill: currentColor;
+}
+
+.btn-frap:active {
+  transform: var(--button-active-scale);
+  box-shadow: var(--shadow-frap-base); /* Ambient shadow fades */
+}
+
+/* ==========================================================================
+   Cards & Containers
+   ========================================================================== */
+
+.card {
+  background-color: var(--color-surface-white);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-4);
+}
+
+/* Feature Band (Dark Green Strip) */
+.feature-band {
+  background-color: var(--color-house-green);
+  color: var(--color-surface-white);
+  width: 100%;
+  padding: var(--space-5) var(--outer-gutter);
+}
+
+@media (min-width: 768px) {
+  .feature-band {
+    padding-left: var(--outer-gutter-medium);
+    padding-right: var(--outer-gutter-medium);
+  }
+}
+
+@media (min-width: 1024px) {
+  .feature-band {
+    padding-left: var(--outer-gutter-large);
+    padding-right: var(--outer-gutter-large);
+  }
+}
+
+.feature-band h2 {
+  color: var(--color-surface-white);
+}
+
+.feature-band p.secondary {
+  color: var(--color-text-white-soft);
+}
+
+/* ==========================================================================
+   Forms & Inputs
+   ========================================================================== */
+
+.input-group {
+  position: relative;
+  margin-bottom: var(--space-4);
+  background-color: var(--color-surface-white);
+  border: 1px solid #d6dbde; /* Input border */
+  border-radius: 4px;
+}
+
+.input-group:focus-within {
+  border-color: var(--color-green-accent);
+}
+
+.input-group input {
+  width: 100%;
+  padding: 2.4rem 1.6rem 0.8rem 1.6rem;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  background: transparent;
+  outline: none;
+  color: var(--color-text-black);
+}
+
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 1.6rem;
+  transform: translateY(-50%);
+  font-size: 1.6rem;
+  color: var(--color-text-black-soft);
+  transition: all 0.3s var(--transition-spring);
+  pointer-events: none;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: 1.2rem;
+  font-size: 1.3rem;
+  color: var(--color-text-black);
+}
+
+/* Valid/Invalid state tints */
+.input-group.is-valid {
+  background-color: var(--color-green-light-valid);
+}
+
+.input-group.is-invalid {
+  background-color: var(--color-red-tint);
+  border-color: var(--color-red);
+}
+
+/* ==========================================================================
+   Rewards Status Card
+   ========================================================================== */
+   
+.rewards-card {
+  background-color: var(--color-house-green);
+  border-radius: var(--border-radius-card);
+  padding: var(--space-4);
+  color: var(--color-surface-white);
+}
+
+.rewards-card-header {
+  height: 4px;
+  width: 100%;
+  border-radius: 2px;
+  margin-bottom: var(--space-3);
+}
+
+.rewards-card-header.bronze { background-color: #cd7f32; }
+.rewards-card-header.silver { background-color: #c0c0c0; }
+.rewards-card-header.gold { background-color: var(--color-gold); }
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+.global-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background-color: var(--color-surface-white);
+  box-shadow: var(--shadow-global-nav);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--outer-gutter);
+  z-index: 1000;
+}
+
+@media (min-width: 480px) { .global-nav { height: 72px; } }
+@media (min-width: 768px) { .global-nav { height: 83px; padding: 0 var(--outer-gutter-medium); } }
+@media (min-width: 1024px) { .global-nav { height: 99px; padding: 0 var(--outer-gutter-large); } }
+
+body {
+  padding-top: 64px;
+}
+@media (min-width: 480px) { body { padding-top: 72px; } }
+@media (min-width: 768px) { body { padding-top: 83px; } }
+@media (min-width: 1024px) { body { padding-top: 99px; } }
+
+/* ==========================================================================
+   Layout Helpers
+   ========================================================================== */
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--outer-gutter);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--outer-gutter-medium);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 var(--outer-gutter-large);
+  }
+}
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.mt-4 { margin-top: var(--space-4); }
+.mb-4 { margin-bottom: var(--space-4); }
+.py-5 { padding-top: var(--space-5); padding-bottom: var(--space-5); }
+.py-8 { padding-top: var(--space-8); padding-bottom: var(--space-8); }

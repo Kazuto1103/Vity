@@ -1,0 +1,1225 @@
+/* ==========================================================================
+   Vity Design System — Full-Screen Social Media Profile
+   ==========================================================================
+   Palet warna dinamis menggunakan CSS custom properties yang di-update
+   via React state saat user berpindah produk. Seluruh halaman bertransisi
+   warna secara smooth.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties (Default: Golden Hour)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Warna dinamis — akan di-override via inline style dari React */
+  --vity-color: #cf8f24;
+  --vity-color-light: #f5dfa8;
+  --vity-color-dark: #7a5510;
+  --vity-color-muted: #b8842a;
+  --vity-text: #ffffff;
+  --vity-bg: linear-gradient(145deg, #cf8f24 0%, #e4a832 40%, #a87420 100%);
+
+  /* Warna brand tetap */
+  --vity-green: #006241;
+  --vity-green-accent: #00754A;
+
+  /* Tipografi */
+  --font-primary: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Spacing */
+  --space-xs: 0.4rem;
+  --space-sm: 0.8rem;
+  --space-md: 1.6rem;
+  --space-lg: 2.4rem;
+  --space-xl: 3.2rem;
+  --space-2xl: 4.8rem;
+  --space-3xl: 6.4rem;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 50%;
+  --radius-pill: 50px;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.12);
+  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.18);
+  --shadow-glow: 0 0 40px rgba(255, 255, 255, 0.1);
+
+  /* Transisi utama untuk pergantian warna */
+  --transition-color: 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 200ms ease;
+  --transition-medium: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset & Base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 62.5%;
+  /* 1rem = 10px */
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  line-height: 1.5;
+  color: var(--vity-text);
+  background: var(--vity-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background var(--transition-color);
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout Utama — Full Screen Container
+   -------------------------------------------------------------------------- */
+.vity-layout {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  /* Dynamic viewport height untuk mobile */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: background var(--transition-color);
+}
+
+/* --------------------------------------------------------------------------
+   4. Header
+   -------------------------------------------------------------------------- */
+.vity-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  height: 64px;
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background var(--transition-color);
+}
+
+.vity-logo {
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.vity-logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: filter var(--transition-color);
+}
+
+/* Tab Switcher di header */
+.vity-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vity-tab {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  font-family: inherit;
+}
+
+.vity-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.vity-tab.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--vity-text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   5. Konten Utama — Product Showcase
+   -------------------------------------------------------------------------- */
+.vity-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 72px var(--space-md) 48px;
+  position: relative;
+  gap: var(--space-sm);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  /* Flexbox shrink fix */
+}
+
+/* Nama produk besar */
+.vity-product-name {
+  font-size: clamp(3.2rem, 7vw, 7.2rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--vity-text);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  line-height: 1;
+  transition: opacity var(--transition-medium), transform var(--transition-medium);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Animasi slide — arah mengikuti tombol navigasi
+   Klik kanan: konten keluar ke kiri, masuk dari kanan
+   Klik kiri:  konten keluar ke kanan, masuk dari kiri
+   -------------------------------------------------------------------------- */
+
+/* Elemen yang bisa di-slide */
+.vity-product-name,
+.vity-tagline,
+.vity-photo-frame,
+.vity-description {
+  transition: transform 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* VISIBLE — posisi normal */
+.slide-visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* EXITING ke kiri (klik arrow kanan) */
+.slide-exiting.slide-left {
+  transform: translateX(-80px);
+  opacity: 0;
+}
+
+/* EXITING ke kanan (klik arrow kiri) */
+.slide-exiting.slide-right {
+  transform: translateX(80px);
+  opacity: 0;
+}
+
+/* ENTERING dari kanan (setelah exit kiri) — tanpa transisi, langsung posisi */
+.slide-entering.slide-left {
+  transform: translateX(80px);
+  opacity: 0;
+  transition: none;
+}
+
+/* ENTERING dari kiri (setelah exit kanan) — tanpa transisi, langsung posisi */
+.slide-entering.slide-right {
+  transform: translateX(-80px);
+  opacity: 0;
+  transition: none;
+}
+
+/* Tagline */
+.vity-tagline {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 400;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.04em;
+  max-width: 500px;
+  transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+
+
+/* --------------------------------------------------------------------------
+   6. Foto Produk — Placeholder Frame
+   -------------------------------------------------------------------------- */
+/* Container horizontal: [◀] [FOTO] [▶] */
+.vity-showcase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.vity-photo-frame {
+  position: relative;
+  width: clamp(200px, 32vw, 340px);
+  flex: 1;
+  max-height: 50vh;
+  min-height: 180px;
+  /* Frame disembunyikan agar gambar tampak mengambang (floating) */
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+.vity-photo-frame:hover {
+  /* Efek melayang tambahan jika di-hover (opsional) */
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Placeholder icon di dalam frame */
+.vity-photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.vity-photo-placeholder svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.4;
+}
+
+.vity-photo-placeholder span {
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Gambar produk di dalam frame (saat diisi nanti) */
+.vity-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+/* Decorative ring di sekitar foto (disembunyikan sesuai request) */
+.vity-photo-ring {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. Navigasi — Panah di Kiri/Kanan Foto
+   -------------------------------------------------------------------------- */
+.vity-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--vity-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  flex-shrink: 0;
+}
+
+.vity-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: scale(1.1);
+}
+
+.vity-nav-btn:active {
+  transform: scale(0.92);
+}
+
+.vity-nav-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Dot indicators di bawah foto */
+.vity-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: var(--space-xs);
+  transition: opacity 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  padding: 0;
+}
+
+.vity-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(1.2);
+}
+
+.vity-dot.active {
+  background: var(--vity-text);
+  width: 24px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   8. Deskripsi Produk
+   -------------------------------------------------------------------------- */
+.vity-description {
+  font-size: clamp(1.3rem, 1.8vw, 1.5rem);
+  font-weight: 300;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 420px;
+  line-height: 1.6;
+  transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+
+
+/* --------------------------------------------------------------------------
+   9. Footer Tagline
+   -------------------------------------------------------------------------- */
+.vity-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-sm) var(--space-lg);
+  gap: 2px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.vity-footer-brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.vity-footer-tagline {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.14);
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   10. FAB (Floating Action Button) — Order Button Glassmorphism
+   -------------------------------------------------------------------------- */
+.vity-fab {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  width: auto;
+  height: auto;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  z-index: 200;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.vity-fab:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+.vity-fab:active {
+  transform: translateY(0);
+}
+
+.vity-fab svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+}
+
+.vity-fab-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   11. Background Decorations
+   -------------------------------------------------------------------------- */
+.vity-bg-decoration {
+  position: absolute;
+  border-radius: var(--radius-full);
+  pointer-events: none;
+  opacity: 0.06;
+  background: white;
+  filter: blur(60px);
+  transition: all 1200ms ease;
+}
+
+.vity-bg-circle-1 {
+  width: 500px;
+  height: 500px;
+  top: -15%;
+  right: -10%;
+}
+
+.vity-bg-circle-2 {
+  width: 400px;
+  height: 400px;
+  bottom: -10%;
+  left: -8%;
+}
+
+.vity-bg-circle-3 {
+  width: 250px;
+  height: 250px;
+  top: 40%;
+  left: 60%;
+  opacity: 0.03;
+}
+
+/* --------------------------------------------------------------------------
+   12. Responsive
+   -------------------------------------------------------------------------- */
+
+/* Mobile kecil */
+@media (max-width: 480px) {
+  .vity-header {
+    padding: 0 var(--space-md);
+    height: 56px;
+  }
+
+  .vity-tab {
+    padding: 4px 12px;
+    font-size: 1.2rem;
+  }
+
+  .vity-logo-img {
+    height: 40px;
+  }
+
+  .vity-content {
+    padding: 60px var(--space-sm) 130px;
+    gap: var(--space-xs);
+  }
+
+  .vity-showcase {
+    gap: var(--space-sm);
+  }
+
+  .vity-nav-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .vity-nav-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .vity-footer {
+    bottom: 72px; /* Push footer up */
+  }
+
+  .vity-fab {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .vity-header {
+    padding: 0 var(--space-xl);
+    height: 72px;
+  }
+
+  .vity-logo-img {
+    height: 56px;
+  }
+
+  .vity-content {
+    padding: 80px var(--space-xl) 56px;
+  }
+
+  .vity-showcase {
+    max-width: 700px;
+  }
+
+  .vity-footer {
+    align-items: flex-start;
+    padding: var(--space-md) var(--space-xl);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .vity-header {
+    padding: 0 var(--space-3xl);
+  }
+
+  .vity-content {
+    padding: 88px var(--space-3xl) var(--space-xl);
+  }
+
+  .vity-footer {
+    padding: var(--space-lg) var(--space-3xl);
+  }
+}
+
+/* Landscape mobile — layout horizontal */
+@media (max-height: 500px) and (orientation: landscape) {
+  .vity-content {
+    flex-direction: row;
+    gap: var(--space-xl);
+    padding-top: 64px;
+  }
+
+  .vity-photo-frame {
+    width: 180px;
+    height: 220px;
+  }
+
+  .vity-product-name {
+    font-size: 3.6rem;
+  }
+
+  .vity-footer {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. Animasi Global
+   -------------------------------------------------------------------------- */
+
+/* Fade in saat pertama kali load */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 800ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-fade-in-delay-1 {
+  animation: fadeInUp 800ms cubic-bezier(0.4, 0, 0.2, 1) 100ms forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delay-2 {
+  animation: slideInFromRight 800ms cubic-bezier(0.4, 0, 0.2, 1) 250ms forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delay-3 {
+  animation: fadeInUp 800ms cubic-bezier(0.4, 0, 0.2, 1) 400ms forwards;
+  opacity: 0;
+}
+
+/* --------------------------------------------------------------------------
+   14. Admin Panel Styles
+   -------------------------------------------------------------------------- */
+.vity-admin-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  animation: admin-fade-in 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vity-admin-container {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(30, 30, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.vity-admin-header {
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.vity-admin-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.vity-admin-close {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.vity-admin-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.vity-admin-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.vity-admin-content {
+  padding: var(--space-xl) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.vity-admin-hint {
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+.vity-admin-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.vity-admin-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  color: white;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.btn-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 300ms ease;
+}
+
+.btn-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.vity-admin-btn:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.vity-admin-btn.win:hover .btn-icon {
+  background: #facc15;
+  color: #000;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
+}
+
+.vity-admin-btn.lose:hover .btn-icon {
+  background: #f87171;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
+}
+
+.vity-admin-footer {
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@keyframes admin-fade-in {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to { opacity: 1; backdrop-filter: blur(24px); }
+}
+
+@media (max-width: 480px) {
+  .vity-admin-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   15. Scan Popup Styles (Menang/Kalah)
+   -------------------------------------------------------------------------- */
+.vity-scan-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vity-scan-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.vity-scan-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: rgba(20, 20, 20, 0.9);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl) var(--space-xl);
+  text-align: center;
+  overflow: hidden;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  transition: all 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+}
+
+.vity-scan-card.active {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Glow Effect */
+.vity-scan-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.vity-scan-card.win {
+  border: 2px solid rgba(250, 204, 21, 0.4);
+}
+
+.vity-scan-card.win .vity-scan-glow {
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.15) 0%, transparent 60%);
+  animation: pulse-glow 3s infinite alternate;
+}
+
+.vity-scan-card.lose {
+  border: 2px solid rgba(156, 163, 175, 0.3);
+}
+
+.vity-scan-card.lose .vity-scan-glow {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 60%);
+}
+
+.vity-scan-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vity-scan-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-md);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+
+.vity-scan-card.win .vity-scan-icon {
+  background: linear-gradient(135deg, #fef08a, #f59e0b);
+  color: #78350f;
+  animation: bounce-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.2s;
+  transform: scale(0);
+}
+
+.vity-scan-card.lose .vity-scan-icon {
+  background: linear-gradient(135deg, #fca5a5, #ef4444);
+  color: #450a0a;
+  animation: shake 0.6s ease-in-out forwards 0.2s;
+  opacity: 0;
+}
+
+.vity-scan-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.vity-scan-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+}
+
+.vity-scan-card.win .vity-scan-title {
+  background: linear-gradient(to right, #fde047, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 12px rgba(250, 204, 21, 0.2);
+}
+
+.vity-scan-card.lose .vity-scan-title {
+  color: #fca5a5;
+}
+
+.vity-scan-desc {
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: var(--space-lg);
+  line-height: 1.5;
+}
+
+.vity-scan-reward-box {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--space-xl);
+}
+
+.reward-label {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.reward-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: white;
+}
+
+.vity-scan-card.win .reward-value {
+  color: #fde047;
+}
+
+.vity-scan-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius-pill);
+  border: none;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.vity-scan-card.win .vity-scan-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
+}
+
+.vity-scan-card.win .vity-scan-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(217, 119, 6, 0.6);
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.vity-scan-card.lose .vity-scan-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.vity-scan-card.lose .vity-scan-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Animations */
+@keyframes bounce-in {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); opacity: 1; }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Confetti */
+.vity-confetti-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 20px;
+  background: #fde047;
+  opacity: 0;
+  animation: fall 3s ease-in infinite;
+}
+
+.confetti-piece.style-0 { background: #fde047; transform: rotate(15deg); }
+.confetti-piece.style-1 { background: #f59e0b; width: 12px; height: 12px; border-radius: 50%; }
+.confetti-piece.style-2 { background: #ffffff; transform: rotate(-30deg); }
+.confetti-piece.style-3 { background: #34d399; width: 8px; height: 24px; }
+
+@keyframes fall {
+  0% { opacity: 1; top: -20px; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; top: 100%; transform: translateY(20px) rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   16. Desktop Optimization (Landscape)
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) and (orientation: landscape) {
+  /* Kurangi gap dan padding vertikal agar muat di layar desktop pendek */
+  .vity-content {
+    padding-top: 80px;
+    padding-bottom: 24px;
+    gap: var(--space-md);
+    justify-content: center;
+  }
+
+  /* Perkecil ukuran font judul di desktop agar tidak mendominasi tinggi layar */
+  .vity-product-name {
+    font-size: clamp(2.4rem, 6vh, 5.4rem);
+  }
+
+  .vity-tagline {
+    font-size: clamp(1.2rem, 2vh, 1.8rem);
+  }
+
+  /* Biarkan gambar mengembang secara maksimal karena sudah tidak ada bingkai */
+  .vity-photo-frame {
+    flex: 1; 
+    width: 100%; 
+    height: 100%; 
+    align-self: stretch;
+    max-height: 550px;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .vity-showcase {
+    gap: var(--space-3xl); /* Beri jarak elegan antara panah dan foto */
+    justify-content: center;
+    max-width: 800px;
+  }
+
+  /* Sembunyikan scrollbar pada vity-content untuk estetika di desktop (tapi tetap bisa di-scroll) */
+  .vity-content::-webkit-scrollbar {
+    width: 6px;
+  }
+  .vity-content::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   17. Light Mode (Keychain Section)
+   -------------------------------------------------------------------------- */
+.vity-light-mode {
+  --vity-text: #1a1a1a;
+}
+.vity-light-mode .vity-tagline {
+  color: rgba(0, 0, 0, 0.6);
+}
+.vity-light-mode .vity-description {
+  color: rgba(0, 0, 0, 0.5);
+}
+.vity-light-mode .vity-footer-brand {
+  color: rgba(0, 0, 0, 0.3);
+}
+.vity-light-mode .vity-footer-tagline {
+  color: rgba(0, 0, 0, 0.3);
+}
+.vity-light-mode .vity-nav-btn {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.05);
+  color: #1a1a1a;
+}
+.vity-light-mode .vity-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+.vity-light-mode .vity-dot {
+  background: rgba(0, 0, 0, 0.2);
+}
+.vity-light-mode .vity-dot.active {
+  background: #1a1a1a;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+.vity-light-mode .vity-fab {
+  background: rgba(255, 255, 255, 0.6);
+  color: #1a1a1a;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+.vity-light-mode .vity-tab {
+  color: rgba(0, 0, 0, 0.5);
+}
+.vity-light-mode .vity-tab.active {
+  background: rgba(0, 0, 0, 0.1);
+  color: #1a1a1a;
+}
+.vity-light-mode .vity-tabs {
+  background: rgba(0, 0, 0, 0.05);
+}
+.vity-light-mode .vity-logo-img {
+  filter: brightness(0);
+}
+.vity-light-mode .vity-header {
+  background: rgba(255, 255, 255, 0.5);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+.vity-light-mode .vity-photo-frame img {
+  mix-blend-mode: multiply; /* Menghilangkan background putih gambar JPEG */
+}

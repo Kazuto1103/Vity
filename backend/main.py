@@ -1,14 +1,18 @@
 import os
+import secrets
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 import logging
+from pydantic import BaseModel
 
 import models
 import database
 from database import get_db
+
+from mangum import Mangum
 
 # Konfigurasi basic logging
 logging.basicConfig(level=logging.INFO)
@@ -51,11 +55,14 @@ app = FastAPI(
 
 # ─────────────────────────────────────────────────────────────
 # CORS Middleware — origin dibaca dari environment variable
-# Contoh di .env: ALLOWED_ORIGINS=https://vity.app,https://www.vity.app
-# Jika tidak diset, default ke "*" (hanya untuk development)
 # ─────────────────────────────────────────────────────────────
-_raw_origins = os.getenv("ALLOWED_ORIGINS", "*")
-allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+allowed_origins = [
+    "http://localhost:5173",
+    "https://vity-frontend.vercel.app", # Placeholder URL produksi Vercel
+    os.getenv("ALLOWED_ORIGINS", "")
+]
+# Bersihkan origin kosong jika ada
+allowed_origins = [o.strip() for o in allowed_origins if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
@@ -183,3 +190,71 @@ def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Terjadi kesalahan pada sistem. Kami sedang memperbaikinya.",
         )
+
+# ─────────────────────────────────────────────────────────────
+# Endpoint: Admin Generate QR Code
+# ─────────────────────────────────────────────────────────────
+class GenerateQRRequest(BaseModel):
+    type: str # "win" or "lose"
+
+@app.post("/api/admin/generate-qr", summary="Generate QR Code baru (Win/Lose)")
+def generate_qr_admin(request: GenerateQRRequest, db: Session = Depends(get_db)):
+    """
+    Endpoint untuk Admin Panel men-generate kode QR baru secara on-the-fly.
+    Tidak memerlukan autentikasi untuk sementara waktu.
+    """
+    try:
+        is_winner = request.type.lower() == "win"
+        reward_id = None
+
+        if is_winner:
+            # Cari keychain pertama sebagai hadiah default
+            keychain = db.query(models.Keychain).first()
+            if not keychain:
+                # Jika tidak ada keychain, buat dummy (mirip script lama)
+                keychain = models.Keychain(variant_name="Gantungan Kunci Spesial", stock=100)
+                db.add(keychain)
+                db.commit()
+                db.refresh(keychain)
+            reward_id = keychain.id
+
+        # Generate unique code aman, 12 karakter
+        unique_code = secrets.token_urlsafe(9)[:12]
+        
+        # Cek apakah bentrok (sangat kecil kemungkinannya, tapi best practice)
+        while db.query(models.Bottle).filter(models.Bottle.qr_code == unique_code).first():
+            unique_code = secrets.token_urlsafe(9)[:12]
+
+        new_bottle = models.Bottle(
+            qr_code=unique_code,
+            is_winner=is_winner,
+            reward_id=reward_id
+        )
+        
+        db.add(new_bottle)
+        db.commit()
+
+        base_url = "http://192.168.1.124:5173/scan/"
+        qr_url = f"{base_url}{unique_code}"
+
+        return {
+            "success": True,
+            "message": f"Berhasil generate QR {'Win' if is_winner else 'Lose'}",
+            "data": {
+                "qr_code": unique_code,
+                "url": qr_url,
+                "type": "win" if is_winner else "lose"
+            }
+        }
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Gagal generate QR admin: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Gagal men-generate QR Code."
+        )
+
+# ─────────────────────────────────────────────────────────────
+# Serverless Adapter
+# ─────────────────────────────────────────────────────────────
+handler = Mangum(app)

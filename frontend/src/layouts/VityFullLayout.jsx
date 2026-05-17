@@ -5,9 +5,8 @@ import ScanPopup from '../components/ScanPopup';
 import { products } from '../data/products';
 import { keychains } from '../data/keychains';
 
-// GANTI INI dengan nomor WhatsApp bisnis Vity Anda (format internasional: kode negara + nomor, tanpa '+' atau '0' di depan)
-// Contoh: "628123456789" untuk nomor Indonesia 08123456789
-export const VITY_WA_NUMBER = "6285184852331"; // Ganti dengan nomor WA asli Anda
+// Link QR WhatsApp resmi bisnis Vity Anda
+export const VITY_WA_LINK = "https://wa.me/qr/6KBAUJVG5I3LG1";
 
 /**
  * ============================================================
@@ -356,7 +355,7 @@ export default function VityFullLayout() {
 
       {/* FAB Order ke WhatsApp */}
       <a 
-        href={`https://wa.me/${VITY_WA_NUMBER}?text=${encodeURIComponent("Halo Vity, saya ingin memesan jus segar!")}`} 
+        href={VITY_WA_LINK} 
         target="_blank" 
         rel="noopener noreferrer" 
         className="vity-fab"

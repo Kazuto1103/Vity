@@ -1,4 +1,10 @@
 import os
+import sys
+from pathlib import Path
+
+# Fix module imports untuk Vercel (karena Vercel menjalankan file ini dari root folder)
+sys.path.append(str(Path(__file__).resolve().parent))
+
 import secrets
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, status

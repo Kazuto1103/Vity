@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { VITY_WA_LINK } from '../layouts/VityFullLayout';
+import { VITY_WA_NUMBER } from '../layouts/VityFullLayout';
 
 /**
  * ============================================================
@@ -30,6 +30,14 @@ export default function ScanPopup({ type, prize, code, onClose }) {
   const isWin = type === 'win';
   const isLose = type === 'lose';
   const isScanned = type === 'scanned';
+
+  // Menyusun pesan WhatsApp otomatis untuk klaim hadiah
+  const getWhatsAppClaimLink = () => {
+    const defaultPrize = prize || 'Gantungan Kunci Spesial';
+    const codeText = code ? ` dengan kode unik: *${code}*` : '';
+    const message = `Halo Vity! Saya memenangkan gacha *${defaultPrize}* dari scan botol Vity${codeText}. Saya ingin mengklaim hadiah saya! 🥳`;
+    return `https://wa.me/${VITY_WA_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
 
   return (
     <div className={`vity-scan-overlay ${isVisible ? 'active' : ''}`}>
@@ -93,7 +101,7 @@ export default function ScanPopup({ type, prize, code, onClose }) {
           {/* Action Button */}
           {isWin ? (
             <a 
-              href={VITY_WA_LINK} 
+              href={getWhatsAppClaimLink()} 
               target="_blank" 
               rel="noopener noreferrer" 
               className="vity-scan-btn win-claim-btn"

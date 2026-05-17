@@ -12,10 +12,11 @@ load_dotenv(dotenv_path=_env_path)
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT", "3306")
+DB_PORT = os.getenv("DB_PORT", "4000")
 DB_NAME = os.getenv("DB_NAME")
 
-SQLALCHEMY_DATABASE_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# TiDB Cloud Serverless merekomendasikan PyMySQL dengan konfigurasi SSL bawaan
+SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 try:
     engine = create_engine(
@@ -23,7 +24,13 @@ try:
         pool_size=5,          
         max_overflow=10,      
         pool_timeout=30,    
-        pool_recycle=1800    
+        pool_recycle=1800,
+        connect_args={
+            "ssl": {
+                "ssl_verify_cert": True,
+                "ssl_verify_identity": True
+            }
+        }
     )
     
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

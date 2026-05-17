@@ -188,7 +188,7 @@ def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
         logger.error(f"Terjadi kesalahan internal: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Terjadi kesalahan pada sistem. Kami sedang memperbaikinya.",
+            detail=f"Terjadi kesalahan pada sistem: {str(e)}"
         )
 
 # ─────────────────────────────────────────────────────────────
@@ -251,7 +251,7 @@ def generate_qr_admin(request: GenerateQRRequest, db: Session = Depends(get_db))
         logger.error(f"Gagal generate QR admin: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Gagal men-generate QR Code."
+            detail=f"Gagal men-generate QR Code. Error details: {str(e)}"
         )
 
 # ─────────────────────────────────────────────────────────────

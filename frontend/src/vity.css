@@ -1070,6 +1070,43 @@ body {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+/* Scanned (Double Scan) Styling */
+.vity-scan-card.scanned {
+  border: 2px solid rgba(249, 115, 22, 0.4);
+}
+
+.vity-scan-card.scanned .vity-scan-glow {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 60%);
+}
+
+.vity-scan-card.scanned .vity-scan-icon {
+  background: linear-gradient(135deg, #fdba74, #f97316);
+  color: #7c2d12;
+  animation: shake 0.6s ease-in-out forwards 0.2s;
+  opacity: 0;
+}
+
+.vity-scan-card.scanned .vity-scan-title {
+  color: #fdba74;
+}
+
+.vity-scan-card.scanned .reward-value {
+  color: #fdba74;
+}
+
+.vity-scan-card.scanned .vity-scan-btn {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  box-shadow: 0 8px 20px rgba(234, 88, 12, 0.4);
+  border: none;
+}
+
+.vity-scan-card.scanned .vity-scan-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(234, 88, 12, 0.6);
+  background: linear-gradient(135deg, #fb923c, #f97316);
+}
+
 /* Animations */
 @keyframes bounce-in {
   0% { transform: scale(0); }

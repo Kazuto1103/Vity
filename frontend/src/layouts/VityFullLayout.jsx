@@ -5,6 +5,10 @@ import ScanPopup from '../components/ScanPopup';
 import { products } from '../data/products';
 import { keychains } from '../data/keychains';
 
+// GANTI INI dengan nomor WhatsApp bisnis Vity Anda (format internasional: kode negara + nomor, tanpa '+' atau '0' di depan)
+// Contoh: "628123456789" untuk nomor Indonesia 08123456789
+export const VITY_WA_NUMBER = "6285184852331"; // Ganti dengan nomor WA asli Anda
+
 /**
  * ============================================================
  * VityFullLayout — Layout Container Utama Layar Penuh
@@ -38,7 +42,7 @@ export default function VityFullLayout() {
   // State untuk menampilkan Admin Panel
   const [isAdminVisible, setIsAdminVisible] = useState(false);
 
-  // State untuk Test Scan Popup (Win/Lose)
+  // State untuk Test Scan Popup (Win/Lose/Scanned)
   const [testScanResult, setTestScanResult] = useState(null);
 
   // Ref untuk mencegah spam klik saat transisi berjalan
@@ -182,12 +186,15 @@ export default function VityFullLayout() {
             if (status === 200) {
               // Sukses scan
               if (body.status === 'WINNER') {
-                setTestScanResult({ type: 'win', prize: body.data?.prize });
+                setTestScanResult({ type: 'win', prize: body.data?.prize, code: code });
               } else {
                 setTestScanResult({ type: 'lose' });
               }
+            } else if (status === 400 && body.detail && (body.detail.includes("kedaluwarsa") || body.detail.includes("diklaim") || body.detail.includes("sudah"))) {
+              // Botol sudah pernah di-scan
+              setTestScanResult({ type: 'scanned', code: code });
             } else {
-              // Jika error (misal sudah di scan atau code salah)
+              // Jika error lainnya (misal code salah / tidak valid)
               alert(`Gagal: ${body.detail || 'Kode tidak valid'}`);
             }
           })
@@ -260,6 +267,7 @@ export default function VityFullLayout() {
         <ScanPopup 
           type={typeof testScanResult === 'string' ? testScanResult : testScanResult.type} 
           prize={typeof testScanResult === 'object' ? testScanResult.prize : undefined}
+          code={typeof testScanResult === 'object' ? testScanResult.code : undefined}
           onClose={() => setTestScanResult(null)} 
         />
       )}
@@ -348,7 +356,7 @@ export default function VityFullLayout() {
 
       {/* FAB Order ke WhatsApp */}
       <a 
-        href="https://wa.me/qr/6KBAUJVG5I3LG1" 
+        href={`https://wa.me/${VITY_WA_NUMBER}?text=${encodeURIComponent("Halo Vity, saya ingin memesan jus segar!")}`} 
         target="_blank" 
         rel="noopener noreferrer" 
         className="vity-fab"

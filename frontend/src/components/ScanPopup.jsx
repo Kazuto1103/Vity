@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { VITY_WA_NUMBER } from '../layouts/VityFullLayout';
 
 /**
  * ============================================================
- * ScanPopup Component — Animasi Hasil Gacha (Menang/Kalah)
+ * ScanPopup Component — Animasi Hasil Gacha (Menang/Kalah/Double Scan)
  * ============================================================
  * Ditampilkan setelah user melakukan scan QR.
  * Memiliki animasi wow-factor:
  * - Win: Konfeti, cahaya emas, efek membesar.
  * - Lose: Warna soft, animasi pantulan ringan.
+ * - Scanned (Double Scan): Warna warning orange, ikon peringatan.
  * ============================================================
  */
-export default function ScanPopup({ type, prize, onClose }) {
+export default function ScanPopup({ type, prize, code, onClose }) {
   const [isVisible, setIsVisible] = useState(false);
 
   // Trigger animasi masuk setelah komponen di-mount
@@ -26,6 +28,16 @@ export default function ScanPopup({ type, prize, onClose }) {
   };
 
   const isWin = type === 'win';
+  const isLose = type === 'lose';
+  const isScanned = type === 'scanned';
+
+  // Menyusun pesan WhatsApp otomatis untuk klaim hadiah
+  const getWhatsAppClaimLink = () => {
+    const defaultPrize = prize || 'Gantungan Kunci Spesial';
+    const codeText = code ? ` dengan kode unik: *${code}*` : '';
+    const message = `Halo Vity! Saya memenangkan gacha *${defaultPrize}* dari scan botol Vity${codeText}. Saya ingin mengklaim hadiah saya! 🥳`;
+    return `https://wa.me/${VITY_WA_NUMBER}?text=${encodeURIComponent(message)}`;
+  };
 
   return (
     <div className={`vity-scan-overlay ${isVisible ? 'active' : ''}`}>
@@ -38,7 +50,7 @@ export default function ScanPopup({ type, prize, onClose }) {
         </div>
       )}
 
-      <div className={`vity-scan-card ${isWin ? 'win' : 'lose'} ${isVisible ? 'active' : ''}`}>
+      <div className={`vity-scan-card ${type} ${isVisible ? 'active' : ''}`}>
         
         {/* Dekorasi Glow */}
         <div className="vity-scan-glow"></div>
@@ -48,6 +60,12 @@ export default function ScanPopup({ type, prize, onClose }) {
             {isWin ? (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            ) : isScanned ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
             ) : (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -60,24 +78,43 @@ export default function ScanPopup({ type, prize, onClose }) {
           </div>
 
           <h2 className="vity-scan-title">
-            {isWin ? 'SELAMAT!' : 'ZONK!'}
+            {isWin ? 'SELAMAT!' : isScanned ? 'SUDAH DI-SCAN!' : 'ZONK!'}
           </h2>
 
           <p className="vity-scan-desc">
             {isWin 
               ? 'Anda mendapatkan hadiah spesial dari botol ini.' 
+              : isScanned
+              ? 'Oops! Kode QR pada botol Vity ini sudah pernah dipindai sebelumnya.'
               : 'Belum beruntung kali ini. Tapi tenang, botol ini masih berharga!'}
           </p>
 
           <div className="vity-scan-reward-box">
-            <span className="reward-label">{isWin ? 'Hadiah Anda:' : 'Anda Mendapatkan:'}</span>
-            <span className="reward-value">{isWin ? (prize || 'Gantungan Kunci Spesial') : '1 Point-Back'}</span>
+            <span className="reward-label">
+              {isWin ? 'Hadiah Anda:' : isScanned ? 'Status Kode:' : 'Anda Mendapatkan:'}
+            </span>
+            <span className="reward-value">
+              {isWin ? (prize || 'Gantungan Kunci Spesial') : isScanned ? 'Expired / Sudah Diklaim' : '1 Point-Back'}
+            </span>
           </div>
 
           {/* Action Button */}
-          <button className="vity-scan-btn" onClick={handleClose}>
-            {isWin ? 'Klaim Sekarang' : 'Tukar Poin Nanti'}
-          </button>
+          {isWin ? (
+            <a 
+              href={getWhatsAppClaimLink()} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="vity-scan-btn win-claim-btn"
+              onClick={handleClose}
+              style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}
+            >
+              Klaim Sekarang
+            </a>
+          ) : (
+            <button className="vity-scan-btn" onClick={handleClose}>
+              {isScanned ? 'Tutup Halaman' : 'Tukar Poin Nanti'}
+            </button>
+          )}
         </div>
       </div>
     </div>

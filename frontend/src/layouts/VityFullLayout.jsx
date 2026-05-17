@@ -182,9 +182,9 @@ export default function VityFullLayout() {
             if (status === 200) {
               // Sukses scan
               if (body.status === 'WINNER') {
-                setTestScanResult('win');
+                setTestScanResult({ type: 'win', prize: body.data?.prize });
               } else {
-                setTestScanResult('lose');
+                setTestScanResult({ type: 'lose' });
               }
             } else {
               // Jika error (misal sudah di scan atau code salah)
@@ -258,7 +258,8 @@ export default function VityFullLayout() {
       {/* Test Scan Popup Overlay */}
       {testScanResult && (
         <ScanPopup 
-          type={testScanResult} 
+          type={typeof testScanResult === 'string' ? testScanResult : testScanResult.type} 
+          prize={typeof testScanResult === 'object' ? testScanResult.prize : undefined}
           onClose={() => setTestScanResult(null)} 
         />
       )}

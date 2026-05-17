@@ -18,6 +18,13 @@ DB_NAME = os.getenv("DB_NAME")
 # TiDB Cloud Serverless merekomendasikan PyMySQL dengan konfigurasi SSL bawaan
 SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
+import ssl
+
+# TiDB Cloud Serverless membutuhkan koneksi aman (TLS/SSL) dengan SNI
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = True
+ssl_context.verify_mode = ssl.CERT_REQUIRED
+
 try:
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
@@ -26,7 +33,7 @@ try:
         pool_timeout=30,    
         pool_recycle=1800,
         connect_args={
-            "ssl": {}
+            "ssl": ssl_context
         }
     )
     

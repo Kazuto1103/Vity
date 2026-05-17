@@ -175,7 +175,8 @@ export default function VityFullLayout() {
         window.history.replaceState({}, document.title, '/');
         
         // Panggil backend API
-        fetch(`${import.meta.env.VITE_API_URL}/api/scan/${code}`)
+        const baseUrl = import.meta.env.VITE_API_URL || "";
+        fetch(`${baseUrl}/api/scan/${code}`)
           .then(res => res.json().then(data => ({ status: res.status, body: data })))
           .then(({ status, body }) => {
             if (status === 200) {

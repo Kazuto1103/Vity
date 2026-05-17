@@ -17,7 +17,8 @@ export default function AdminPanel({ onClose, onTestPopup }) {
     setIsLoading(true);
     setResult(null);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/generate-qr`, {
+      const baseUrl = import.meta.env.VITE_API_URL || "";
+      const response = await fetch(`${baseUrl}/api/admin/generate-qr`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

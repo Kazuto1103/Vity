@@ -240,8 +240,9 @@ def generate_qr_admin(request: GenerateQRRequest, db: Session = Depends(get_db))
         db.add(new_bottle)
         db.commit()
 
-        base_url = "http://192.168.1.124:5173/scan/"
-        qr_url = f"{base_url}{unique_code}"
+        # Gunakan URL frontend dinamis dari env var, fallback ke IP lokal untuk testing
+        frontend_url = os.getenv("FRONTEND_URL", "http://192.168.1.124:5173").rstrip("/")
+        qr_url = f"{frontend_url}/scan/{unique_code}"
 
         return {
             "success": True,

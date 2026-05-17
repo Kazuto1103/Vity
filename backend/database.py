@@ -26,10 +26,7 @@ try:
         pool_timeout=30,    
         pool_recycle=1800,
         connect_args={
-            "ssl": {
-                "ssl_verify_cert": True,
-                "ssl_verify_identity": True
-            }
+            "ssl": {}
         }
     )
     

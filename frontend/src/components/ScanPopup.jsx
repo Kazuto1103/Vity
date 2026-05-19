@@ -86,7 +86,7 @@ export default function ScanPopup({ type, prize, code, onClose }) {
               ? 'Anda mendapatkan hadiah spesial dari botol ini.' 
               : isScanned
               ? 'Oops! Kode QR pada botol Vity ini sudah pernah dipindai sebelumnya.'
-              : 'Belum beruntung kali ini. Tapi tenang, botol ini masih berharga!'}
+              : 'Belum beruntung kali ini. Kalau ada kesempatan, coba lagi ya~'}
           </p>
 
           <div className="vity-scan-reward-box">
@@ -94,7 +94,7 @@ export default function ScanPopup({ type, prize, code, onClose }) {
               {isWin ? 'Hadiah Anda:' : isScanned ? 'Status Kode:' : 'Anda Mendapatkan:'}
             </span>
             <span className="reward-value">
-              {isWin ? (prize || 'Gantungan Kunci Spesial') : isScanned ? 'Expired / Sudah Diklaim' : '1 Point-Back'}
+              {isWin ? (prize || 'Gantungan Kunci Spesial') : isScanned ? 'Expired / Sudah Diklaim' : 'Maaf yaa~'}
             </span>
           </div>
 
